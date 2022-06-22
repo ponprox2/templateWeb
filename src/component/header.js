@@ -17,7 +17,7 @@ function Header() {
 
   useEffect(() => {
     const tempUser = JSON.parse(localStorage.getItem("userInfo"));
-    console.log(tempUser);
+   
     setUSerInfo(tempUser);
   }, []);
 
@@ -241,81 +241,6 @@ function Header() {
                 id="navbarSupportedContent"
               >
                 <ul class="navbar-nav m-auto">
-                  {/* <li class="nav-item">
-                    <Link to="/#" class="nav-link active">
-                      Pages
-                      <i class="bx bx-chevron-down"></i>
-                    </Link>
-
-                    <ul class="dropdown-menu">
-                      <li class="nav-item">
-                        <Link to="/about" class="nav-link">
-                          About Us
-                        </Link>
-                      </li>
-
-                      <li class="nav-item">
-                        <Link to="/team" class="nav-link">
-                          Our Team
-                        </Link>
-                      </li>
-
-                      <li class="nav-item">
-                        <Link to="/gallery" class="nav-link">
-                          Gallery
-                        </Link>
-                      </li>
-
-                      <li class="nav-item">
-                        <Link to="/compare" class="nav-link">
-                          Compare
-                        </Link>
-                      </li>
-
-                      <li class="nav-item">
-                        <Link to="/order-tracking" class="nav-link">
-                          Order Tracking
-                        </Link>
-                      </li>
-
-                      <li class="nav-item">
-                        <Link to="/my-account" class="nav-link active">
-                          My Account
-                        </Link>
-                      </li>
-
-                      <li class="nav-item">
-                        <Link to="/faq" class="nav-link">
-                          FAQ
-                        </Link>
-                      </li>
-
-                      <li class="nav-item">
-                        <Link to="/terms-of-service" class="nav-link">
-                          Terms of Service
-                        </Link>
-                      </li>
-
-                      <li class="nav-item">
-                        <Link to="/privacy-policy" class="nav-link">
-                          Privacy Policy
-                        </Link>
-                      </li>
-
-                      <li class="nav-item">
-                        <Link to="/error-404" class="nav-link">
-                          Error Page
-                        </Link>
-                      </li>
-
-                      <li class="nav-item">
-                        <Link to="/coming-soon" class="nav-link">
-                          Coming Soon
-                        </Link>
-                      </li>
-                    </ul>
-                  </li> */}
-
                   <li class="nav-item">
                     <Link to="/#" class="nav-link">
                       Shop
@@ -347,11 +272,11 @@ function Header() {
                         </Link>
                       </li>
 
-                      <li class="nav-item">
+                      {/* <li class="nav-item">
                         <Link to="/products-details" class="nav-link">
                           Products Details
                         </Link>
-                      </li>
+                      </li> */}
                     </ul>
                   </li>
 

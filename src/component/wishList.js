@@ -1,718 +1,125 @@
+import { Link, useNavigate } from "react-router-dom";
+import Footer from "./footer";
+import Header from "./header";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { Button, Snackbar } from "@mui/material";
+function WishList() {
+  const tempUserInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const [wishlist, setWishlist] = useState([]);
+  async function getProductAll() {
+    const res = await axios.get(
+      `http://localhost:3000/api/v1/users/${tempUserInfo.id}`
+    );
+    setWishlist(res.data[0].wishlist);
+  }
+  useEffect(() => {
+    getProductAll();
+  }, []);
 
-import { Link, useNavigate } from 'react-router-dom';
+  const handleRemoveWishList = (index) => {
+    async function deleteWishlist() {
+      const res = await axios.delete(
+        `http://localhost:3000/api/v1/users/${tempUserInfo.id}/wishlist/${index}`
+      );
+      if (res.data.message === "Delete item wishlist successfully") {
+        getProductAll();
+      }
+    }
+    deleteWishlist();
+  };
+  return (
+    <>
+      <Header />
 
-function WishList(){
-    return(
-        <>
-            {/* Start Preloader Area  */}
-            {/* <div class="preloader">
-                <div class="loader">
-                    <div class="sbl-half-circle-spin">
-                        <div></div>
-                    </div>
-                </div>
-            </div> */}
-         {/* End Preloader Area  */}
-
-         {/* Start Top Header Area  */}
-        <div class="top-header-area">
+      <div class="page-banner-area">
+        <div class="d-table">
+          <div class="d-table-cell">
             <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-lg-6 col-md-12">
-                        <ul class="top-header-information">
-                            <li>
-                                <i class="flaticon-pin"></i>
-                                565, Nyman Tower Melbourne, Australia
-                            </li>
-                            <li>
-                                <i class="flaticon-clock"></i>
-                                Monday 8:00 AM - 12:00 PM
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="col-lg-6 col-md-12">
-                        <ul class="top-header-optional">
-                            <li>Currency: <b>USD</b></li>
-
-                            <li>
-                                <div class="dropdown language-switcher d-inline-block">
-                                    <button class="dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <span>Language <i class='bx bx-chevron-down'></i></span>
-                                    </button>
-
-                                    <div class="dropdown-menu">
-                                        <Link to="/#" class="dropdown-item d-flex align-items-center">
-                                            <img src="assets/img/english.png" class="shadow-sm" alt="image"/>
-                                            <span>English</span>
-                                        </Link>
-                                        <Link to="/#" class="dropdown-item d-flex align-items-center">
-                                            <img src="assets/img/arab.png" class="shadow-sm" alt="image"/>
-                                            <span>العربيّة</span>
-                                        </Link>
-                                        <Link to="/#" class="dropdown-item d-flex align-items-center">
-                                            <img src="assets/img/germany.png" class="shadow-sm" alt="image"/>
-                                            <span>Deutsch</span>
-                                        </Link>
-                                        <Link to="/#" class="dropdown-item d-flex align-items-center">
-                                            <img src="assets/img/portugal.png" class="shadow-sm" alt="image"/>
-                                            <span>Português</span>
-                                        </Link>
-                                        <Link to="/#" class="dropdown-item d-flex align-items-center">
-                                            <img src="assets/img/china.png" class="shadow-sm" alt="image"/>
-                                            <span>简体中文</span>
-                                        </Link>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+              <div class="page-banner-content">
+                <h2>Wishlist</h2>
+                <ul>
+                  <li>
+                    <Link to="/">Home</Link>
+                  </li>
+                  <li>Wishlist</li>
+                </ul>
+              </div>
             </div>
+          </div>
         </div>
-         {/* End Top Header Area  */}
+      </div>
+      {/* End Page Banner  */}
 
-         {/* Start Middle Header Area  */}
-        <div class="middle-header-area">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-lg-6">
-                        <div class="middle-header-search">
-                            <form class="search-form">
-                                <label>
-                                    <span class="screen-reader-text">Search for:</span>
-                                    <input type="search" class="search-field" placeholder="Search the entire store here"/>
-                                </label>
-
-                                <button type="submit">
-                                    <i class='bx bx-search-alt'></i>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-6">
-                        <ul class="middle-header-optional">
-                            <li>
-                                <Link to="/wishlist"><i class="flaticon-heart"><span>0</span></i> Wishlist</Link>
-                            </li>
-                            <li>
-                                <Link to="/cart"><i class="flaticon-shopping-cart"><span>2</span></i> Add to Cart</Link>
-                            </li>
-                            <li>
-                                <Link to="/my-account" class="user-btn"><i class='flaticon-enter'></i>Login / Register</Link>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-         {/* End Middle Header Area  */}
-
-         {/* Start Navbar Area  */}
-        <div class="navbar-area navbar-two">
-            <div class="main-responsive-nav">
-                <div class="container">
-                    <div class="main-responsive-menu">
-                        <div class="logo">
-                            <Link to="/">
-                                <img src="assets/img/logo.png" alt="image"/>
-                            </Link>
-                        </div>
-                    </div>
-                </div>
+      {/* Start Wishlist Area  */}
+      <section class="wishlist-area ptb-100">
+        <div class="container">
+          <div class="wishlist-table table-responsive">
+            <div class="wishlist-title">
+              <h2>My Wishlist</h2>
             </div>
 
-            <div class="main-navbar">
-                <div class="container">
-                    <nav class="navbar navbar-expand-md navbar-light">
-                      <Link class="navbar-brand" to="/">
-                            <img src="assets/img/logo.png" alt="image"/>
+            <table class="table table-bordered">
+              <tbody>
+                {wishlist &&
+                  wishlist.map((value, index) => (
+                    <tr class="bottom-class">
+                      <td class="product-remove">
+                        <Button
+                          onClick={() => handleRemoveWishList(index)}
+                          class="remove"
+                        >
+                          <i class="bx bx-x"></i>
+                        </Button>
+                      </td>
+
+                      <td class="product-thumbnail">
+                        <Link to={`/products-details?id=${value.id}`}>
+                          <img
+                            src="assets/img/products/products-5.jpg"
+                            alt="image"
+                          />
                         </Link>
+                      </td>
 
-                        <div class="collapse navbar-collapse mean-menu" id="navbarSupportedContent">
-                            <ul class="navbar-nav m-auto">
-                                <li class="nav-item">
-                                    <Link to="/#" class="nav-link">
-                                        Home 
-                                        <i class='bx bx-chevron-down'></i>
-                                    </Link>
-                                    <ul class="dropdown-menu">
-                                        <li class="nav-item">
-                                            <Link to="/" class="nav-link">
-                                                Home One
-                                            </Link>
-                                        </li>
+                      <td class="product-name">
+                        <Link to={`/products-details?id=${value.id}`}>
+                          {value.name}
+                        </Link>
+                      </td>
 
-                                        <li class="nav-item">
-                                            <Link to="/index-2" class="nav-link">
-                                                Home Two
-                                            </Link>
-                                        </li>
+                      <td class="product-price">
+                        <span class="unit-amount">{value.price}</span>
+                      </td>
 
-                                        <li class="nav-item">
-                                            <Link to="/index-3" class="nav-link">
-                                                Home Three
-                                            </Link>
-                                        </li>
-                                    </ul>
-                                </li>
+                      {/* <td class="product-stock">
+                      <span class="stock">{value.discount}</span>
+                    </td> */}
 
-                                <li class="nav-item">
-                                    <Link to="/#" class="nav-link">
-                                        Pages 
-                                        <i class='bx bx-chevron-down'></i>
-                                    </Link>
-
-                                    <ul class="dropdown-menu">
-                                        <li class="nav-item">
-                                            <Link to="/about" class="nav-link">
-                                                About Us
-                                            </Link>
-                                        </li>
-
-                                        <li class="nav-item">
-                                            <Link to="/team" class="nav-link">
-                                                Our Team
-                                            </Link>
-                                        </li>
-
-                                        <li class="nav-item">
-                                            <Link to="/gallery" class="nav-link">
-                                                Gallery
-                                            </Link>
-                                        </li>
-
-                                        <li class="nav-item">
-                                            <Link to="/compare" class="nav-link">
-                                                Compare
-                                            </Link>
-                                        </li>
-
-                                        <li class="nav-item">
-                                            <Link to="/order-tracking" class="nav-link">
-                                                Order Tracking
-                                            </Link>
-                                        </li>
-
-                                        <li class="nav-item">
-                                            <Link to="/my-account" class="nav-link">
-                                                My Account
-                                            </Link>
-                                        </li>
-
-                                        <li class="nav-item">
-                                            <Link to="/faq" class="nav-link">
-                                                FAQ
-                                            </Link>
-                                        </li>
-                                
-                                        <li class="nav-item">
-                                            <Link to="/terms-of-service" class="nav-link">
-                                                Terms of Service
-                                            </Link>
-                                        </li>
-
-                                        <li class="nav-item">
-                                            <Link to="/privacy-policy" class="nav-link">
-                                                Privacy Policy
-                                            </Link>
-                                        </li>
-                                    
-                                        <li class="nav-item">
-                                            <Link to="/error-404" class="nav-link">
-                                                Error Page
-                                            </Link>
-                                        </li>
-
-                                        <li class="nav-item">
-                                            <Link to="/coming-soon" class="nav-link">
-                                                Coming Soon
-                                            </Link>
-                                        </li>
-                                    </ul>
-                                </li>
-
-                                <li class="nav-item">
-                                    <Link to="/#" class="nav-link active">
-                                        Shop 
-                                        <i class='bx bx-chevron-down'></i>
-                                    </Link>
-
-                                    <ul class="dropdown-menu">
-                                        <li class="nav-item">
-                                            <Link to="/shop" class="nav-link">
-                                                Shop
-                                            </Link>
-                                        </li>
-
-                                        <li class="nav-item">
-                                            <Link to="/cart" class="nav-link">
-                                                Cart
-                                            </Link>
-                                        </li>
-
-                                        <li class="nav-item">
-                                            <Link to="/wishlist" class="nav-link active">
-                                                Wishlist
-                                            </Link>
-                                        </li>
-
-                                        <li class="nav-item">
-                                            <Link to="/checkout" class="nav-link">
-                                                Checkout
-                                            </Link>
-                                        </li>
-
-                                        <li class="nav-item">
-                                            <Link to="/products-details" class="nav-link">
-                                                Products Details
-                                            </Link>
-                                        </li>
-                                    </ul>
-                                </li>
-
-                                <li class="nav-item">
-                                    <Link to="/#" class="nav-link">
-                                        Blog 
-                                        <i class='bx bx-chevron-down'></i>
-                                    </Link>
-
-                                    <ul class="dropdown-menu">
-                                        <li class="nav-item">
-                                            <Link to="/blog" class="nav-link">
-                                                Blog
-                                            </Link>
-                                        </li>
-                                        
-                                        <li class="nav-item">
-                                            <Link to="/blog-right-sidebar" class="nav-link">
-                                                Blog Right Sidebar
-                                            </Link>
-                                        </li>
-
-                                        <li class="nav-item">
-                                            <Link to="/blog-details" class="nav-link">
-                                                Blog Details
-                                            </Link>
-                                        </li>
-                                    </ul>
-                                </li>
-
-                                <li class="nav-item">
-                                    <Link to="/contact" class="nav-link">
-                                        Contact
-                                    </Link>
-                                </li>
-                            </ul>
-
-                            <div class="others-option d-flex align-items-center">
-                                <div class="option-item">
-                                    <span>
-                                        Hotline:
-                                        <Link to="/tel:882563789966">(+882) 563 789 966</Link>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </nav>
-                </div>
-            </div>
-
-            <div class="others-option-for-responsive">
-                <div class="container">
-                    <div class="dot-menu">
-                        <div class="inner">
-                            <div class="circle circle-one"></div>
-                            <div class="circle circle-two"></div>
-                            <div class="circle circle-three"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="container">
-                        <div class="option-inner">
-                            <div class="others-option d-flex align-items-center">
-                                <div class="option-item">
-                                    <span>
-                                        Hotline:
-                                        <Link to="/tel:882563789966">(+882) 563 789 966</Link>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                      <td class="product-btn">
+                        <Link
+                          to={`/products-details?id=${value.id}`}
+                          class="default-btn"
+                        >
+                          <i class="flaticon-shopping-cart"></i>
+                          Add To Cart
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
         </div>
-         {/* End Navbar Area  */}
+      </section>
 
-         {/* Start Page Banner  */}
-        <div class="page-banner-area">
-            <div class="d-table">
-                <div class="d-table-cell">
-                    <div class="container">
-                        <div class="page-banner-content">
-                            <h2>Wishlist</h2>
-                            <ul>
-                                <li>
-                                    <Link to="/">Home</Link>
-                                </li>
-                                <li>Wishlist</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-         {/* End Page Banner  */}
+      <Footer />
 
-         {/* Start Wishlist Area  */}
-		<section class="wishlist-area ptb-100">
-            <div class="container">
-                <div class="wishlist-table table-responsive">
-                    <div class="wishlist-title">
-                        <h2>My  Wishlist</h2>
-                    </div>
-
-                    <table class="table table-bordered">
-                        <tbody>
-                            <tr>
-                                <td class="product-remove">
-                                    <Link to="/#" class="remove">
-                                        <i class='bx bx-x'></i>
-                                    </Link>
-                                </td>
-
-                                <td class="product-thumbnail">
-                                    <Link to="/#">
-                                        <img src="assets/img/products/products-1.jpg"alt="image"/>
-                                    </Link>
-                                </td>
-
-                                <td class="product-name">
-                                    <Link to="/products-details">17 Inch Rim</Link>
-                                </td>
-
-                                <td class="product-price">
-                                    <span class="unit-amount">$75.00</span>
-                                </td>
-
-                                <td class="product-stock">
-                                    <span class="stock">In Stock</span>
-                                </td>
-
-                                <td class="product-btn">
-                                    <Link to="/#" class="default-btn">
-                                        <i class="flaticon-shopping-cart"></i>
-                                        Add To Cart
-                                    </Link>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td class="product-remove">
-                                    <Link to="/#" class="remove">
-                                        <i class='bx bx-x'></i>
-                                    </Link>
-                                </td>
-
-                                <td class="product-thumbnail">
-                                    <Link to="/#">
-                                        <img src="assets/img/products/products-2.jpg"alt="image"/>
-                                    </Link>
-                                </td>
-
-                                <td class="product-name">
-                                    <Link to="/products-details">Car Engine</Link>
-                                </td>
-
-                                <td class="product-price">
-                                    <span class="unit-amount">$175.00</span>
-                                </td>
-
-                                <td class="product-stock">
-                                    <span class="stock">In Stock</span>
-                                </td>
-
-                                <td class="product-btn">
-                                    <Link to="/#" class="default-btn">
-                                        <i class="flaticon-shopping-cart"></i>
-                                        Add To Cart
-                                    </Link>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td class="product-remove">
-                                    <Link to="/#" class="remove">
-                                        <i class='bx bx-x'></i>
-                                    </Link>
-                                </td>
-
-                                <td class="product-thumbnail">
-                                    <Link to="/#">
-                                        <img src="assets/img/products/products-3.jpg"alt="image"/>
-                                    </Link>
-                                </td>
-
-                                <td class="product-name">
-                                    <Link to="/products-details">Ispat Rim</Link>
-                                </td>
-
-                                <td class="product-price">
-                                    <span class="unit-amount">$175.00</span>
-                                </td>
-
-                                <td class="product-stock">
-                                    <span class="stock">In Stock</span>
-                                </td>
-
-                                <td class="product-btn">
-                                    <Link to="/#" class="default-btn">
-                                        <i class="flaticon-shopping-cart"></i>
-                                        Add To Cart
-                                    </Link>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td class="product-remove">
-                                    <Link to="/#" class="remove">
-                                        <i class='bx bx-x'></i>
-                                    </Link>
-                                </td>
-
-                                <td class="product-thumbnail">
-                                    <Link to="/#">
-                                        <img src="assets/img/products/products-4.jpg"alt="image"/>
-                                    </Link>
-                                </td>
-
-                                <td class="product-name">
-                                    <Link to="/products-details">Steering Wheel</Link>
-                                </td>
-
-                                <td class="product-price">
-                                    <span class="unit-amount">$175.00</span>
-                                </td>
-
-                                <td class="product-stock">
-                                    <span class="stock">In Stock</span>
-                                </td>
-
-                                <td class="product-btn">
-                                    <Link to="/#" class="default-btn">
-                                        <i class="flaticon-shopping-cart"></i>
-                                        Add To Cart
-                                    </Link>
-                                </td>
-                            </tr>
-
-                            <tr class="bottom-class">
-                                <td class="product-remove">
-                                    <Link to="/#" class="remove">
-                                        <i class='bx bx-x'></i>
-                                    </Link>
-                                </td>
-
-                                <td class="product-thumbnail">
-                                    <Link to="/#">
-                                        <img src="assets/img/products/products-5.jpg"alt="image"/>
-                                    </Link>
-                                </td>
-
-                                <td class="product-name">
-                                    <Link to="/#">Walnut Wall</Link>
-                                </td>
-
-                                <td class="product-price">
-                                    <span class="unit-amount">$175.00</span>
-                                </td>
-
-                                <td class="product-stock">
-                                    <span class="stock">In Stock</span>
-                                </td>
-
-                                <td class="product-btn">
-                                    <Link to="/#" class="default-btn">
-                                        <i class="flaticon-shopping-cart"></i>
-                                        Add To Cart
-                                    </Link>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-         {/* End Wishlist Area  */}
-
-         {/* Start Footer Area  */}
-        <section class="footer-area pt-100 pb-70">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-3 col-sm-6">
-                        <div class="single-footer-widget">
-                            <Link to="/">
-                                <img src="assets/img/logo-2.png" alt="image"/>
-                            </Link>
-
-                            <p>Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-
-                            <ul class="footer-social">
-                                <li>
-                                    <Link to="/#" target="_blank">
-                                        <i class='bx bxl-facebook'></i>
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link to="/#" target="_blank">
-                                        <i class='bx bxl-twitter'></i>
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link to="/#" target="_blank">
-                                        <i class='bx bxl-pinterest-alt'></i>
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link to="/#" target="_blank">
-                                        <i class='bx bxl-linkedin'></i>
-                                    </Link>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-3 col-sm-6">
-                        <div class="single-footer-widget">
-                            <h2>Recent Post</h2>
-
-                            <div class="footer-post">
-                                <article class="item">
-                                    <Link to="/#" class="thumb">
-                                        <span class="fullimage cover bg1" role="img"></span>
-                                    </Link>
-                                    <div class="info">
-                                        <h4 class="title usmall">
-                                            <Link to="/#">Electronic Car Protect Air Pollution</Link>
-                                        </h4>
-                                        <span>24 Dec 2020</span>
-                                    </div>
-                                </article>
-
-                                <article class="item">
-                                    <Link to="/#" class="thumb">
-                                        <span class="fullimage cover bg2" role="img"></span>
-                                    </Link>
-                                    <div class="info">
-                                        <h4 class="title usmall">
-                                            <Link to="/#">Automotive Advancements to Look Forward</Link>
-                                        </h4>
-                                        <span>25 Dec 2020</span>
-                                    </div>
-                                </article>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-3 col-sm-6">
-                        <div class="single-footer-widget pl-5">
-                            <h2>Quick Links</h2>
-
-                            <ul class="quick-links">
-                                <li>
-                                    <i class='bx bxs-chevrons-right'></i>
-                                    <Link to="/#">About Company</Link>
-                                </li>
-                                <li>
-                                    <i class='bx bxs-chevrons-right'></i>
-                                    <Link to="/#">Services</Link>
-                                </li>
-                                <li>
-                                    <i class='bx bxs-chevrons-right'></i>
-                                    <Link to="/#">Shop</Link>
-                                </li>
-                                <li>
-                                    <i class='bx bxs-chevrons-right'></i>
-                                    <Link to="/#">FAQ</Link>
-                                </li>
-                                <li>
-                                    <i class='bx bxs-chevrons-right'></i>
-                                    <Link to="/#">Blog</Link>
-                                </li>
-                                <li>
-                                    <i class='bx bxs-chevrons-right'></i>
-                                    <Link to="/#">Gallery</Link>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-3 col-sm-6">
-                        <div class="single-footer-widget">
-                            <h2>Information</h2>
-
-                            <ul class="footer-contact-info">
-                                <li>
-                                    <i class='bx bxs-phone'></i>
-                                    <span>Phone</span>
-                                    <Link to="/tel:882569756">882-569-756</Link>
-                                </li>
-                                <li>
-                                    <i class='bx bx-envelope'></i>
-                                    <span>Email</span>
-                                    <Link to="/mailto:hello@maxon.com">hello@maxon.com</Link>
-                                </li>
-                                <li>
-                                    <i class='bx bx-map'></i>
-                                    <span>Address</span>
-                                    175 5th Ave Premium Area, New York
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-         {/* End Footer Area  */}
-
-         {/* Start Copy Right Area  */}
-        <div class="copyright-area">
-            <div class="container">
-                <div class="copyright-area-content">
-                    <div class="row align-items-center">
-                        <div class="col-lg-6 col-md-6">
-                            <p>
-                                Copyright @2020 Maxon. All Rights Reserved by
-                                <Link to="/https://hibootstrap.com/" target="_blank">
-                                    HiBootstrap
-                                </Link>
-                            </p>
-                        </div>
-
-                        <div class="col-lg-6 col-md-6">
-                            <ul>
-                                <li>
-                                    <Link to="/terms-of-service">Terms & Conditions</Link>
-                                </li>
-                                <li>
-                                    <Link to="/privacy-policy">Privacy Policy</Link>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-         {/* End Copy Right Area  */}
-
-         {/* Start Go Top Area  */}
-        <div class="go-top">
-            <i class='bx bx-up-arrow-alt'></i>
-        </div>
-        </>
-    )
+      <div class="go-top">
+        <i class="bx bx-up-arrow-alt"></i>
+      </div>
+    </>
+  );
 }
 
-export default WishList
+export default WishList;

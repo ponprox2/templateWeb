@@ -11,6 +11,7 @@ import ProductDetail from "./component/productDetail";
 import Shop from "./component/shop";
 import CheckOut from "./component/CheckOut";
 import ProFile from "./component/proFile";
+import Register from "./component/register";
 function App() {
   return (
     <div className="App">
@@ -34,6 +35,8 @@ function App() {
         <Route path="/wishlist" element={<WishList />} exact />
         <Route path="/profile" element={<ProFile />} exact />
         <Route path="/change-password" element={<Index />} exact />
+        <Route path="/cart/checkout" element={<CheckOut />} exact />
+        <Route path="/register" element={<Register />} exact />
       </Routes>
     </div>
   );

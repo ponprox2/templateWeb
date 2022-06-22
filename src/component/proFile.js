@@ -55,6 +55,7 @@ export default function ProFile() {
 
   const handleChangeData = (e) => {
     const { name, value } = e.target;
+    console.log(typeof name);
     setBodyUser((prevState) => ({
       ...prevState,
       [name]: value,

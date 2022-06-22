@@ -7,12 +7,20 @@ class HandleCart {
     );
     return res;
   };
-  addProductToCart = async (body) => {
-   const res = await axios.patch(`http://localhost:3000/api/v1/users/1/cart`, body);
-   return res
+  addProductToCart = async (body, id) => {
+    const res = await axios.patch(
+      `http://localhost:3000/api/v1/users/${id}/cart`,
+      body,
+      { headers: { "content-type": "multipart/form-data" } }
+    );
+    return res;
   };
-
- s
+  updateQuality = async (id, index, quantity) => {
+    const res = await axios.patch(
+      `http://localhost:3000/api/v1/users/${id}/cart/${index}?quantity=${quantity}`
+    );
+    return res;
+  };
 }
 
 const handleCart = new HandleCart();

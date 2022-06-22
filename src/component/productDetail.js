@@ -1,12 +1,22 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Button, Snackbar } from "@mui/material";
+import {
+  Button,
+  Snackbar,
+  TextField,
+  Box,
+  Select,
+  MenuItem,
+  Typography,
+} from "@mui/material";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
 import Header from "./header";
 import Ratting from "./rating";
 import handleCart from "./service/getCartByIdUser";
+import Image from "./imageResult";
+// import { useFormik, Form, FormikProvider } from "formik";
 
 const ButtonSize = styled(Button)({
   marginLeft: "5px",
@@ -23,16 +33,33 @@ const ButtonSize = styled(Button)({
 function ProductDetail() {
   const { search } = useLocation();
   const navigate = useNavigate();
+  const [review, setReview] = useState([]);
   const [productByID, setProductByID] = useState([]);
   const [size, setSize] = useState("S");
   const [resultData, setResultData] = useState([]);
   const [quantity, setQuantity] = useState(1);
   const [rateProduct, setRateProduct] = useState("");
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const tempSnackbar = {
-    vertical: "top",
-    horizontal: "right",
-  };
+  const [rateReview, setRateReview] = useState(5);
+  const [textReview, setTextReview] = useState("");
+
+  const temp = JSON.parse(localStorage.getItem("userInfo"));
+  const id = search.split("=")[1];
+  async function getProductDetail() {
+    const res = await axios.get(`http://localhost:3000/api/v1/products/${id}`);
+    console.log(res.data[0]);
+    setProductByID(res.data[0]);
+
+    setReview(res.data[0].review);
+    if (res.status === 200) {
+      const result = res.data[0].stock.filter((value) => {
+        return value.size === size;
+      });
+
+      setResultData(result);
+    }
+  }
+
   useEffect(() => {
     if (productByID.stock) {
       const result = productByID?.stock.filter((value) => {
@@ -43,33 +70,19 @@ function ProductDetail() {
   }, [size]);
   useEffect(() => {
     if (productByID.review) {
-      let temp = productByID.review.length;
+      let tempReview = productByID.review.length;
       const result = productByID?.review.reduce(
         (cur, arr) => cur + arr.rate * 1,
         0
       );
-      setRateProduct(result / temp);
+      setRateProduct(result / tempReview);
     }
   }, [productByID]);
   useEffect(() => {
-    const id = search.split("=")[1];
-    async function getProductDetail() {
-      const res = await axios.get(
-        `http://localhost:3000/api/v1/products/${id}`
-      );
-      setProductByID(res.data[0]);
-      if (res.status === 200) {
-        const result = res.data[0].stock.filter((value) => {
-          return value.size === size;
-        });
-        setResultData(result);
-      }
-    }
     getProductDetail();
   }, []);
 
   const handleSetSize = (value) => {
-    console.log(value);
     setSize(value);
   };
 
@@ -80,7 +93,7 @@ function ProductDetail() {
       quantity: quantity,
     };
     async function addToCart() {
-      const res = await handleCart.addProductToCart(itemInCart);
+      const res = await handleCart.addProductToCart(itemInCart, temp.id);
 
       if (res.status === 200) {
         setOpenSnackbar(true);
@@ -91,6 +104,23 @@ function ProductDetail() {
     }
 
     addToCart();
+  };
+  const handleAddReview = () => {
+    const body = {
+      username: temp.username,
+      rate: rateReview,
+      feedback: textReview,
+    };
+    async function addReview() {
+      const res = await axios.patch(
+        `http://localhost:3000/api/v1/products/${id}/review`,
+        body
+      );
+      if (res.message === "Review user created successfully") {
+        getProductDetail();
+      }
+    }
+    addReview();
   };
   return (
     <>
@@ -121,10 +151,7 @@ function ProductDetail() {
                 <div class="row align-items-center">
                   <div class="col-lg-7 col-md-6">
                     <div class="main-products-image">
-                      <img
-                        src="assets/img/products/products-8.jpg"
-                        alt="image"
-                      />
+                      <Image id={id} />
                     </div>
                   </div>
 
@@ -287,210 +314,69 @@ function ProductDetail() {
                   <div class="tab-pane fade" id="reviews" role="tabpanel">
                     <div class="products-reviews">
                       <h3>Reviews</h3>
-
-                      <div class="row">
-                        <div class="side">
-                          <div>5 star</div>
-                        </div>
-                        <div class="middle">
-                          <div class="bar-container">
-                            <div class="bar-5"></div>
-                          </div>
-                        </div>
-                        <div class="side right">
-                          <div>70%</div>
-                        </div>
-                        <div class="side">
-                          <div>4 star</div>
-                        </div>
-                        <div class="middle">
-                          <div class="bar-container">
-                            <div class="bar-4"></div>
-                          </div>
-                        </div>
-                        <div class="side right">
-                          <div>20%</div>
-                        </div>
-                        <div class="side">
-                          <div>3 star</div>
-                        </div>
-                        <div class="middle">
-                          <div class="bar-container">
-                            <div class="bar-3"></div>
-                          </div>
-                        </div>
-                        <div class="side right">
-                          <div>5%</div>
-                        </div>
-                        <div class="side">
-                          <div>2 star</div>
-                        </div>
-                        <div class="middle">
-                          <div class="bar-container">
-                            <div class="bar-2"></div>
-                          </div>
-                        </div>
-                        <div class="side right">
-                          <div>3%</div>
-                        </div>
-                        <div class="side">
-                          <div>1 star</div>
-                        </div>
-                        <div class="middle">
-                          <div class="bar-container">
-                            <div class="bar-1"></div>
-                          </div>
-                        </div>
-                        <div class="side right">
-                          <div>2%</div>
-                        </div>
-                      </div>
                     </div>
 
                     <div class="products-review-form">
-                      <h3>Customer Reviews</h3>
-
-                      <div class="review-title">
-                        <div class="rating">
-                          <i class="bx bxs-star"></i>
-                          <i class="bx bxs-star"></i>
-                          <i class="bx bxs-star"></i>
-                          <i class="bx bxs-star"></i>
-                          <i class="bx bxs-star"></i>
-                        </div>
-
-                        <Link to="/#" class="default-btn">
-                          Write a Review
-                          <span></span>
-                        </Link>
-                      </div>
-
-                      <div class="review-comments">
-                        <div class="review-item">
-                          <div class="rating">
-                            <i class="bx bxs-star"></i>
-                            <i class="bx bxs-star"></i>
-                            <i class="bx bxs-star"></i>
-                            <i class="bx bxs-star"></i>
-                            <i class="bx bxs-star"></i>
+                      {review &&
+                        review.map((value) => (
+                          <div class="review-comments">
+                            <div class="review-item">
+                              <div
+                                class="rating"
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <Ratting rattingProduct={value.rate} />
+                              </div>
+                              {/* <h3>Good</h3> */}
+                              <span>
+                                <strong>{value.username}</strong> on{" "}
+                                <strong>{value.created_at}</strong>
+                              </span>
+                              <p>{value.feedback}</p>
+                            </div>
                           </div>
-                          <h3>Good</h3>
-                          <span>
-                            <strong>Admin</strong> on{" "}
-                            <strong>Sep 21, 2019</strong>
-                          </span>
-                          <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing
-                            elit, sed do eiusmod tempor incididunt ut labore et
-                            dolore magna aliqua. Ut enim ad minim veniam, quis
-                            nostrud exercitation.
-                          </p>
-                        </div>
-
-                        <div class="review-item">
-                          <div class="rating">
-                            <i class="bx bxs-star"></i>
-                            <i class="bx bxs-star"></i>
-                            <i class="bx bxs-star"></i>
-                            <i class="bx bxs-star"></i>
-                            <i class="bx bxs-star"></i>
-                          </div>
-                          <h3>Good</h3>
-                          <span>
-                            <strong>Admin</strong> on{" "}
-                            <strong>Sep 21, 2019</strong>
-                          </span>
-                          <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing
-                            elit, sed do eiusmod tempor incididunt ut labore et
-                            dolore magna aliqua. Ut enim ad minim veniam, quis
-                            nostrud exercitation.
-                          </p>
-                        </div>
-
-                        <div class="review-item">
-                          <div class="rating">
-                            <i class="bx bxs-star"></i>
-                            <i class="bx bxs-star"></i>
-                            <i class="bx bxs-star"></i>
-                            <i class="bx bxs-star"></i>
-                            <i class="bx bxs-star"></i>
-                          </div>
-                          <h3>Good</h3>
-                          <span>
-                            <strong>Admin</strong> on{" "}
-                            <strong>Sep 21, 2019</strong>
-                          </span>
-                          <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing
-                            elit, sed do eiusmod tempor incididunt ut labore et
-                            dolore magna aliqua. Ut enim ad minim veniam, quis
-                            nostrud exercitation.
-                          </p>
-                        </div>
-                      </div>
+                        ))}
 
                       <div class="review-form">
                         <h3>Write a Review</h3>
 
-                        <form>
-                          <div class="row">
-                            <div class="col-lg-6 col-md-6">
-                              <div class="form-group">
-                                <input
-                                  type="text"
-                                  id="name"
-                                  name="name"
-                                  placeholder="Enter your name"
-                                  class="form-control"
-                                />
-                              </div>
-                            </div>
-
-                            <div class="col-lg-6 col-md-6">
-                              <div class="form-group">
-                                <input
-                                  type="email"
-                                  id="email"
-                                  name="email"
-                                  placeholder="Enter your email"
-                                  class="form-control"
-                                />
-                              </div>
-                            </div>
-
-                            <div class="col-lg-12 col-md-12">
-                              <div class="form-group">
-                                <input
-                                  type="text"
-                                  id="review-title"
-                                  name="review-title"
-                                  placeholder="Enter your review a title"
-                                  class="form-control"
-                                />
-                              </div>
-                            </div>
-
-                            <div class="col-lg-12 col-md-12">
-                              <div class="form-group">
-                                <textarea
-                                  name="review-body"
-                                  id="review-body"
-                                  cols="30"
-                                  rows="6"
-                                  placeholder="Write your comments here"
-                                  class="form-control"
-                                ></textarea>
-                              </div>
-                            </div>
-
-                            <div class="col-lg-12 col-md-12">
-                              <button type="submit" class="default-btn">
-                                Submit Review
-                              </button>
-                            </div>
-                          </div>
-                        </form>
+                        <Box
+                          style={{ display: "flex", justifyContent: "center" }}
+                        >
+                          <TextField
+                            label="Nhập lời đánh giá"
+                            fullWidth
+                            value={textReview}
+                            onChange={(e) => setTextReview(e.target.value)}
+                          />
+                          <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={rateReview}
+                            label="rate"
+                            onChange={(e) => setRateReview(e.target.value)}
+                          >
+                            <MenuItem value={1}>1</MenuItem>
+                            <MenuItem value={2}>2</MenuItem>
+                            <MenuItem value={3}>3</MenuItem>
+                            <MenuItem value={4}>4</MenuItem>
+                            <MenuItem value={5}>5</MenuItem>
+                          </Select>
+                          <Button
+                            style={{
+                              backgroundColor: "#d31531",
+                              color: "white",
+                            }}
+                            onClick={handleAddReview}
+                          >
+                            {" "}
+                            {/* <Typography >viết đánh giá</Typography> */}
+                            đăng
+                          </Button>
+                        </Box>
                       </div>
                     </div>
                   </div>

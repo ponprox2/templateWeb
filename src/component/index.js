@@ -7,24 +7,33 @@ import { Button, Snackbar } from "@mui/material";
 import getImage from "./service/getImageProduct";
 // import HandleCart from "./service/handle-cart";
 import handleCart from "./service/getCartByIdUser";
+import Image from "./imageResult";
 function Index() {
   // const navigate = useNavigate();
   const [listProduct, setListProduct] = useState([]);
-
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const tempUserInfo = JSON.parse(localStorage.getItem("userInfo"));
   useEffect(() => {
     async function getProductAll() {
-      const res = await axios.get("http://localhost:3000/api/v1/products/");
+      const res = await axios.get(
+        "http://localhost:3000/api/v1/products/filter/sale/asc"
+      );
       setListProduct(res.data);
     }
     getProductAll();
   }, []);
-  const handleWishList = (id) =>{
-    // async function addToWishList() {
-    //   const res = await axios.get("http://localhost:3000/api/v1/products/");
-    //   setListProduct(res.data);
-    // }
-    // addToWishList();
-  }
+  const handleWishList = (id) => {
+    async function addToWishList() {
+      const res = await axios.patch(
+        `http://localhost:3000/api/v1/users/${tempUserInfo.id}/wishlist?idProduct=${id}`
+      );
+    }
+    addToWishList();
+    setOpenSnackbar(true);
+  };
+  const handleClose = () => {
+    setOpenSnackbar(false);
+  };
   return (
     <div>
       <Header />
@@ -133,10 +142,7 @@ function Index() {
                       <div className="single-products">
                         <div className="products-image">
                           <Link to={`/products-details?id=${value.id}`}>
-                            <img
-                              src="assets/img/products/products-1.jpg"
-                              alt="image"
-                            />
+                            <Image id={value.id} />
                           </Link>
                           {value.discount > 0 ? (
                             <div className="tag">Sale! {value.discount}%</div>
@@ -150,7 +156,15 @@ function Index() {
                               </Link>
                             </li>
                             <li>
-                              <Button onClick={()=>handleWishList(value.id)}>
+                              <Button
+                                style={{
+                                  backgroundColor: "#d31531",
+                                  borderRadius: "50%",
+                                  width: "40px",
+                                  height: "40px",
+                                }}
+                                onClick={() => handleWishList(value.id)}
+                              >
                                 <i className="flaticon-heart"></i>
                               </Button>
                             </li>
@@ -1693,6 +1707,13 @@ function Index() {
       </section>
 
       <Footer />
+      <Snackbar
+        // anchorOrigin={(tempSnackbar.vertical, tempSnackbar.horizontal)}
+        autoHideDuration={1500}
+        open={openSnackbar}
+        onClose={handleClose}
+        message="Thêm sản phẩm vào danh sách yêu thích thành công"
+      />
     </div>
   );
 }
